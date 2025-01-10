@@ -9,3 +9,8 @@ npm create vite@latest
 ```
 npm run dev
 ```
+
+## Libs
+```
+npm i react-redux @reduxjs/toolkit
+```
