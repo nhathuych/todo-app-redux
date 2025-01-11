@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import FillterOptions from "./FillterOptions"
 import TodoItem from "./TodoItem"
 import { useDispatch, useSelector } from "react-redux"
-import { addTodo, removeTodo, setTodoList } from "../reducers/todoReducer"
+import { addTodo, removeTodo, setTodoList, toggleCompleted } from "../reducers/todoReducer"
 import NoDataImage from "../assets/images/empty.svg"
 
 const TodoFrame = () => {
@@ -29,6 +29,10 @@ const TodoFrame = () => {
 
   const handleRemoveTodo = (id) => {
     dispatch(removeTodo({ id }))
+  }
+
+  const handleToggleCompleted = (id) => {
+    dispatch(toggleCompleted({ id }))
   }
 
   const resetInput = () => {
@@ -77,7 +81,7 @@ const TodoFrame = () => {
       {todoList.length === 0 && <img src={NoDataImage} className='w-full' /> }
       <ul>
         {todoList?.map((todo, index) => {
-          return <TodoItem key={todo.id} todo={todo} index={index} handleRemoveTodo={handleRemoveTodo} />
+          return <TodoItem key={todo.id} todo={todo} index={index} handleRemoveTodo={handleRemoveTodo} handleToggleCompleted={handleToggleCompleted} />
         })}
       </ul>
     </div>
