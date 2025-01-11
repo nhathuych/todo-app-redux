@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import FillterOptions from "./FillterOptions"
 import TodoItem from "./TodoItem"
 import { useDispatch, useSelector } from "react-redux"
-import { addTodo, removeTodo, setTodoList, toggleCompleted } from "../reducers/todoReducer"
+import { addTodo, updateFilterStatus, removeTodo, setTodoList, toggleCompleted } from "../reducers/todoReducer"
 import NoDataImage from "../assets/images/empty.svg"
 
 const TodoFrame = () => {
@@ -11,7 +11,10 @@ const TodoFrame = () => {
 
   const dispatch = useDispatch()
   const storedTodoList = JSON.parse(localStorage.getItem(TODO_LIST_LOCAL_STORAGE_KEY))
+
+  // Get variables defined in initialState (in todoReducer.js).
   const todoList = useSelector((state) => state.todos.todoList) // get todo list from Redux store.
+  const filter = useSelector((state) => state.todos.filter) // get filter from Redux store.
 
   const handleAddTodo = () => {
     const task = inputTodo.current.value.trim()
@@ -33,6 +36,10 @@ const TodoFrame = () => {
 
   const handleToggleCompleted = (id) => {
     dispatch(toggleCompleted({ id }))
+  }
+
+  const handleUpdateFilterStatus = (filter) => {
+    dispatch(updateFilterStatus({ filter }))
   }
 
   const resetInput = () => {
@@ -74,14 +81,16 @@ const TodoFrame = () => {
 
       {/* filter area */}
       <div className="flex justify-center">
-        <FillterOptions/>
+        <FillterOptions handleUpdateFilterStatus={handleUpdateFilterStatus} />
       </div>
 
       {/* todo list area */}
       {todoList.length === 0 && <img src={NoDataImage} className='w-full' /> }
       <ul>
         {todoList?.map((todo, index) => {
-          return <TodoItem key={todo.id} todo={todo} index={index} handleRemoveTodo={handleRemoveTodo} handleToggleCompleted={handleToggleCompleted} />
+          if (filter == todo.isCompleted || filter == 'ALL') {
+            return <TodoItem key={todo.id} todo={todo} index={index} handleRemoveTodo={handleRemoveTodo} handleToggleCompleted={handleToggleCompleted} />
+          }
         })}
       </ul>
     </div>

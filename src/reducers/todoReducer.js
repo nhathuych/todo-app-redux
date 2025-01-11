@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
   todoList: [],
   filter: "ALL",
-  searchTerm: ""
 }
 
 const TodoSlice = createSlice({
@@ -29,7 +28,10 @@ const TodoSlice = createSlice({
       const index = state.todoList.findIndex((todo) => todo.id === action.payload.id)
 
       state.todoList.splice(index, 1) // 2nd parameter means remove one item only.
-    }
+    },
+    updateFilterStatus: (state, action) => {
+      state.filter = action.payload.filter
+    },
   }
 })
 
@@ -38,6 +40,7 @@ export const {
   addTodo,
   toggleCompleted,
   removeTodo,
+  updateFilterStatus,
 } = TodoSlice.actions
 
 export default TodoSlice.reducer
