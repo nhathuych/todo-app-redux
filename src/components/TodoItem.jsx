@@ -1,7 +1,7 @@
 import { FaCheck, FaTrash } from "react-icons/fa"
 
 const TodoItem = (props) => {
-  const { todo, index } = props
+  const { todo, index, handleRemoveTodo } = props
 
   return (
     <li className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 py-2 gap-4">
@@ -15,7 +15,9 @@ const TodoItem = (props) => {
           <FaCheck/>
         </button>
 
-        <button className="bg-red-600 text-white text-sm rounded sm:px-2 py-2 px-1 mr-1">
+        <button
+          onClick={() => handleRemoveTodo(todo.id)}
+          className="bg-red-600 text-white text-sm rounded sm:px-2 py-2 px-1 mr-1">
           <FaTrash/>
         </button>
       </div>

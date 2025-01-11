@@ -2,15 +2,16 @@ import { useEffect, useRef } from "react"
 import FillterOptions from "./FillterOptions"
 import TodoItem from "./TodoItem"
 import { useDispatch, useSelector } from "react-redux"
-import { addTodo, setTodoList } from "../reducers/todoReducer"
+import { addTodo, removeTodo, setTodoList } from "../reducers/todoReducer"
 import NoDataImage from "../assets/images/empty.svg"
 
 const TodoFrame = () => {
-  const inputTodo = useRef() // mapping between input and this variable.
-  const inputSearch = useRef() // mapping between input and this variable.
+  const TODO_LIST_LOCAL_STORAGE_KEY = "todoList"
+  const inputTodo = useRef()
 
   const dispatch = useDispatch()
-  const todoList = useSelector((state) => state.todos.todoList)
+  const storedTodoList = JSON.parse(localStorage.getItem(TODO_LIST_LOCAL_STORAGE_KEY))
+  const todoList = useSelector((state) => state.todos.todoList) // get todo list from Redux store.
 
   const handleAddTodo = () => {
     const task = inputTodo.current.value.trim()
@@ -26,22 +27,22 @@ const TodoFrame = () => {
     resetInput()
   }
 
+  const handleRemoveTodo = (id) => {
+    dispatch(removeTodo({ id }))
+  }
+
   const resetInput = () => {
     inputTodo.current.value = ''
     inputTodo.current.focus()
   }
 
   useEffect(() => {
-    if (todoList.length > 0) {
-      localStorage.setItem("todoList", JSON.stringify(todoList))
-    }
+    localStorage.setItem(TODO_LIST_LOCAL_STORAGE_KEY, JSON.stringify(todoList))
   }, [todoList])
 
   useEffect(() => {
-    const todoListFromLocalStorage = JSON.parse(localStorage.getItem("todoList"))
-
-    if (todoListFromLocalStorage) {
-      dispatch(setTodoList(todoListFromLocalStorage))
+    if (storedTodoList) {
+      dispatch(setTodoList(storedTodoList))
     }
   }, [])
 
@@ -68,29 +69,15 @@ const TodoFrame = () => {
       </div>
 
       {/* filter area */}
-      <div className="flex items-center justify-between">
+      <div className="flex justify-center">
         <FillterOptions/>
-
-        <div className='flex items-center bg-gray-200 rounded-full my-3'>
-          <input
-            type='text'
-            ref={inputSearch}
-            placeholder='Search your tasks...'
-            className='bg-transparent outline-none border-0 flex-1 placeholder:text-slate-600 h-12 pl-6 pr-2'
-          />
-          <button
-            className='bg-blue-900 text-white text-lg font-medium rounded-full border-none cursor-pointer w-28 h-12'
-          >
-            Search
-          </button>
-        </div>
       </div>
 
       {/* todo list area */}
       {todoList.length === 0 && <img src={NoDataImage} className='w-full' /> }
       <ul>
         {todoList?.map((todo, index) => {
-          return <TodoItem todo={todo} index={index} key={todo.id} />
+          return <TodoItem key={todo.id} todo={todo} index={index} handleRemoveTodo={handleRemoveTodo} />
         })}
       </ul>
     </div>

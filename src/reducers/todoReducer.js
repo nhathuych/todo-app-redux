@@ -28,9 +28,7 @@ const TodoSlice = createSlice({
     removeTodo: (state, action) => {
       const index = state.todoList.findIndex((todo) => todo.id === action.payload.id)
 
-      if (index > -1) {
-        state.todoList.splice(index, 1) // 2nd parameter means remove one item only.
-      }
+      state.todoList.splice(index, 1) // 2nd parameter means remove one item only.
     }
   }
 })
